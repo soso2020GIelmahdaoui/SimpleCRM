@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model clients {
+  idClients     Int    @id @unique(map: "idClients_UNIQUE") @default(autoincrement())
+  nom_client    String @db.VarChar(45)
+  prenom_client String @db.VarChar(45)
+  adress        String @db.VarChar(45)
+  ville_client  String @db.VarChar(45)
+  num_tele      String @db.VarChar(45)
+  email_client  String @db.VarChar(45)
+  id_entreprise Int
+
+  @@index([id_entreprise], map: "clients_id_entreprise_fkey")
+}
+
+model entreprise {
+  id_entreprise Int      @id @unique(map: "id_entreprise_UNIQUE") @default(autoincrement())
+  nom           String   @db.VarChar(45)
+  siege         String   @db.VarChar(45)
+  date_creation DateTime @db.Date
+  id_fiscal     String   @db.VarChar(45)
+  capital       String   @db.VarChar(45)
+  nbre_employ_  Int      @map("nbre_employé")
+  ville         String   @db.VarChar(45)
+  Responsable   String   @db.VarChar(45)
+  num_tele      String   @db.VarChar(45)
+  email         String   @db.VarChar(45)
+}
+
+model produit {
+  Ref_Produit   Int    @id @unique(map: "Ref_Produit_UNIQUE") @default(autoincrement())
+  prix_achat    String @db.VarChar(45)
+  prix_vente    String @db.VarChar(45)
+  taux_marge    String @db.VarChar(45)
+  dimension     String @db.VarChar(45)
+  taille        String @db.VarChar(45)
+  Produitcol    String @db.VarChar(45)
+  id_entreprise Int
+
+  @@index([id_entreprise], map: "produit_id_entreprise_fkey")
+}
+
+model facture {
+  ID_Facture   Int      @id @default(autoincrement())
+  Date_Facture DateTime @db.Date
+  ID_Client    Int
+  montant      Decimal  @db.Decimal(10, 0)
+
+  @@index([ID_Client], map: "ID_Client")
+}
+
+model ligne_facture {
+  ID_Facture Int
+  ID_Produit Int
+  Quantite   Int?
+
+  @@id([ID_Facture, ID_Produit])
+  @@index([ID_Produit], map: "ID_Produit")
+}
